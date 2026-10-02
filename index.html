@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logo Maker Pro</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#1b1d21;
+  color:#e8eaed;
+}
+
+button{
+  font:inherit;
+  color:inherit;
+}
+
+/* =========================
+   MAIN APPLICATION
+========================= */
+
+#app{
+  width:100%;
+  height:100vh;
+  display:grid;
+  grid-template-rows:42px 44px minmax(0,1fr);
+  overflow:hidden;
+}
+
+/* =========================
+   TOP MENU BAR
+========================= */
+
+#topMenuBar{
+  height:42px;
+  display:flex;
+  align-items:center;
+  background:#25282d;
+  border-bottom:1px solid #111317;
+  user-select:none;
+  white-space:nowrap;
+  position:relative;
+  z-index:1000;
+}
+
+#brand{
+  width:155px;
+  min-width:155px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  padding:0 14px;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.2px;
+  border-right:1px solid #34373d;
+}
+
+#menuItems{
+  height:100%;
+  display:flex;
+  align-items:center;
+  gap:0;
+  flex:1;
+}
+
+.menu{
+  position:relative;
+  height:100%;
+  display:flex;
+  align-items:center;
+}
+
+.menuButton{
+  height:100%;
+  border:0;
+  background:transparent;
+  padding:0 12px;
+  cursor:pointer;
+  font-size:13px;
+  color:#d9dce0;
+}
+
+.menuButton:hover,
+.menu.open .menuButton{
+  background:#34383e;
+  color:#fff;
+}
+
+/* =========================
+   MENU DROPDOWNS
+========================= */
+
+.dropdown{
+  position:absolute;
+  top:42px;
+  left:0;
+  min-width:220px;
+  padding:5px 0;
+  background:#292c31;
+  border:1px solid #42464d;
+  box-shadow:0 12px 28px rgba(0,0,0,.45);
+  display:none;
+  z-index:3000;
+}
+
+.menu.open .dropdown{
+  display:block;
+}
+
+.dropdownItem{
+  height:31px;
+  padding:0 13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:0;
+  width:100%;
+  background:transparent;
+  color:#dfe2e6;
+  text-align:left;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.dropdownItem:hover{
+  background:#3a3f46;
+  color:#fff;
+}
+
+.dropdownSeparator{
+  height:1px;
+  background:#40444a;
+  margin:5px 0;
+}
+
+/* =========================
+   OPTIONS BAR
+========================= */
+
+#optionsBar{
+  height:44px;
+  background:#202328;
+  border-bottom:1px solid #111317;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  overflow:hidden;
+  position:relative;
+  z-index:900;
+}
+
+#optionsContent{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.options-empty{
+  width:100%;
+  height:100%;
+}
+
+.optionGroup{
+  height:30px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.optionLabel{
+  font-size:11px;
+  color:#9da2aa;
+}
+
+.optionControl{
+  height:27px;
+  min-width:55px;
+  background:#2c3036;
+  border:1px solid #444950;
+  border-radius:3px;
+  padding:0 7px;
+  font-size:11px;
+}
+
+.optionControl:focus{
+  outline:none;
+  border-color:#6b737d;
+}
+
+/* =========================
+   MAIN WORKSPACE
+========================= */
+
+#workspace{
+  min-width:0;
+  min-height:0;
+  display:grid;
+  grid-template-columns:58px minmax(0,1fr) 285px;
+  overflow:hidden;
+}
+
+/* =========================
+   LEFT TOOLBAR
+========================= */
+
+#leftToolbar{
+  width:58px;
+  min-width:58px;
+  height:100%;
+  background:#24272c;
+  border-right:1px solid #111317;
+  position:relative;
+  z-index:800;
+  overflow:visible;
+  padding:7px 5px;
+}
+
+.toolList{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+}
+
+.tool{
+  width:48px;
+  height:48px;
+  border:0;
+  background:transparent;
+  border-radius:4px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  cursor:pointer;
+  color:#c7cbd0;
+  position:relative;
+}
+
+.tool:hover{
+  background:#33373d;
+  color:#fff;
+}
+
+.tool.active{
+  background:#3b4148;
+  color:#fff;
+}
+
+.toolIcon{
+  width:20px;
+  height:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  line-height:1;
+}
+
+.toolName{
+  font-size:8px;
+  line-height:9px;
+  white-space:nowrap;
+}
+
+/* =========================
+   TOOL FLYOUT
+========================= */
+
+.toolFlyout{
+  position:absolute;
+  left:57px;
+  top:0;
+  width:270px;
+  max-height:calc(100vh - 100px);
+  overflow:auto;
+  background:#292c31;
+  border:1px solid #454a51;
+  box-shadow:0 14px 30px rgba(0,0,0,.48);
+  padding:7px;
+  display:none;
+  z-index:4000;
+  border-radius:4px;
+}
+
+.toolFlyout.open{
+  display:block;
+}
+
+.flyoutTitle{
+  height:30px;
+  display:flex;
+  align-items:center;
+  padding:0 8px;
+  border-bottom:1px solid #3e4248;
+  margin-bottom:5px;
+  font-size:12px;
+  font-weight:600;
+}
+
+.flyoutOption{
+  width:100%;
+  min-height:30px;
+  padding:6px 8px;
+  border:0;
+  background:transparent;
+  color:#d9dde1;
+  text-align:left;
+  border-radius:3px;
+  font-size:11px;
+  cursor:pointer;
+}
+
+.flyoutOption:hover{
+  background:#3a3f46;
+  color:#fff;
+}
+
+/* =========================
+   CANVAS AREA
+========================= */
+
+#canvasArea{
+  min-width:0;
+  min-height:0;
+  position:relative;
+  overflow:hidden;
+  background:#17191d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+#canvasArea::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:24px 24px;
+  pointer-events:none;
+}
+
+/* =========================
+   CANVAS VIEWPORT
+========================= */
+
+#canvasViewport{
+  width:min(900px,88%);
+  height:min(620px,82%);
+  min-width:320px;
+  min-height:240px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:2;
+}
+
+#artboard{
+  width:100%;
+  height:100%;
+  background:#fff;
+  position:relative;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.45),
+    0 0 0 1px rgba(0,0,0,.35);
+  overflow:hidden;
+  touch-action:none;
+}
+
+#canvasSvg{
+  width:100%;
+  height:100%;
+  display:block;
+  touch-action:none;
+  user-select:none;
+}
+
+/* =========================
+   RIGHT SIDEBAR
+========================= */
+
+#rightSidebar{
+  min-width:0;
+  min-height:0;
+  height:100%;
+  background:#24272c;
+  border-left:1px solid #111317;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.panelHeader{
+  height:39px;
+  min-height:39px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 11px;
+  background:#292c31;
+  border-bottom:1px solid #3b3f45;
+  font-size:12px;
+  font-weight:600;
+}
+
+.panelHeaderButton{
+  border:0;
+  background:transparent;
+  color:#aeb3ba;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.panelHeaderButton:hover{
+  color:#fff;
+}
+
+/* =========================
+   LAYERS
+========================= */
+
+#layersPanel{
+  height:250px;
+  min-height:180px;
+  display:flex;
+  flex-direction:column;
+  border-bottom:1px solid #111317;
+}
+
+#layersList{
+  flex:1;
+  overflow:auto;
+  padding:5px;
+}
+
+.layerRow{
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 6px;
+  border-radius:3px;
+  cursor:pointer;
+  font-size:11px;
+}
+
+.layerRow:hover{
+  background:#33373d;
+}
+
+.layerRow.active{
+  background:#3b4148;
+}
+
+.layerVisibility{
+  width:20px;
+  text-align:center;
+  color:#9da2aa;
+}
+
+.layerThumb{
+  width:25px;
+  height:25px;
+  border:1px solid #555a62;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#222;
+  font-size:9px;
+}
+
+.layerName{
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* =========================
+   RIGHT COLLAPSIBLE PANELS
+========================= */
+
+.panelSection{
+  border-bottom:1px solid #111317;
+}
+
+.panelSectionHeader{
+  height:37px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 11px;
+  background:#272a2f;
+  cursor:pointer;
+  font-size:11px;
+  color:#d4d7db;
+}
+
+.panelSectionHeader:hover{
+  background:#30343a;
+}
+
+.panelSectionArrow{
+  color:#8d939b;
+  font-size:10px;
+}
+
+.panelSectionBody{
+  display:none;
+  padding:9px;
+  background:#22252a;
+}
+
+.panelSection.open .panelSectionBody{
+  display:block;
+}
+
+.panelSection.open .panelSectionArrow{
+  transform:rotate(90deg);
+}
+
+/* =========================
+   RIGHT PANEL CONTROLS
+========================= */
+
+.panelGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.panelField{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.panelField.full{
+  grid-column:1 / -1;
+}
+
+.panelField label{
+  font-size:9px;
+  color:#949aa2;
+}
+
+.panelInput,
+.panelSelect{
+  width:100%;
+  height:27px;
+  background:#2d3137;
+  border:1px solid #444951;
+  border-radius:3px;
+  color:#e5e7e9;
+  padding:0 6px;
+  font-size:10px;
+}
+
+.colorRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.colorBox{
+  height:32px;
+  border:1px solid #555b63;
+  background:#fff;
+  border-radius:3px;
+  cursor:pointer;
+}
+
+.strokeBox{
+  height:32px;
+  border:1px solid #555b63;
+  background:transparent;
+  position:relative;
+  border-radius:3px;
+  cursor:pointer;
+}
+
+.strokeBox::after{
+  content:"";
+  position:absolute;
+  left:4px;
+  right:4px;
+  top:14px;
+  height:2px;
+  background:#111;
+}
+
+@media(max-width:900px){
+  #workspace{
+    grid-template-columns:54px minmax(0,1fr) 240px;
+  }
+
+  #rightSidebar{
+    width:240px;
+  }
+
+  #brand{
+    width:130px;
+    min-width:130px;
+  }
+}
+
+@media(max-width:700px){
+  #workspace{
+    grid-template-columns:54px minmax(0,1fr) 220px;
+  }
+
+  #rightSidebar{
+    width:220px;
+  }
+
+  #brand{
+    display:none;
+  }
+}
+
+::-webkit-scrollbar{
+  width:7px;
+  height:7px;
+}
+
+::-webkit-scrollbar-track{
+  background:#1d2024;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#454a51;
+  border-radius:5px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#5a6068;
+}
+
+[hidden]{
+  display:none !important;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+  <header id="topMenuBar">
+    <div id="brand">Logo Maker Pro</div>
+    <nav id="menuItems">
+      <div class="menu">
+        <button class="menuButton">File</button>
+        <div class="dropdown">
+          <button class="dropdownItem">New</button>
+          <button class="dropdownItem">Open</button>
+          <button class="dropdownItem">Save</button>
+          <button class="dropdownItem">Save As</button>
+          <button class="dropdownItem">Place / Import</button>
+          <div class="dropdownSeparator"></div>
+          <button class="dropdownItem">Export PNG</button>
+          <button class="dropdownItem">Export SVG</button>
+          <button class="dropdownItem">Export JPG</button>
+          <button class="dropdownItem">Export PDF</button>
+          <div class="dropdownSeparator"></div>
+          <button class="dropdownItem">Document Setup</button>
+          <button class="dropdownItem">Print</button>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button class="menuButton">Edit</button>
+        <div class="dropdown">
+          <button class="dropdownItem">Undo</button>
+          <button class="dropdownItem">Redo</button>
+          <div class="dropdownSeparator"></div>
+          <button class="dropdownItem">Cut</button>
+          <button class="dropdownItem">Copy</button>
+          <button class="dropdownItem">Paste</button>
+          <button class="dropdownItem">Delete</button>
+          <div class="dropdownSeparator"></div>
+          <button class="dropdownItem">Select All</button>
+          <button class="dropdownItem">Deselect</button>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button class="menuButton">View</button>
+        <div class="dropdown">
+          <button class="dropdownItem">Zoom In</button>
+          <button class="dropdownItem">Zoom Out</button>
+          <button class="dropdownItem">Fit Canvas</button>
+          <button class="dropdownItem">100%</button>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button class="menuButton">Help</button>
+        <div class="dropdown">
+          <button class="dropdownItem">Help Center</button>
+          <button class="dropdownItem">About Logo Maker Pro</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div id="optionsBar">
+    <div id="optionsContent" class="options-empty"></div>
+  </div>
+
+  <main id="workspace">
+
+    <aside id="leftToolbar">
+      <div class="toolList">
+        <button class="tool" data-tool="rectangle">
+          <span class="toolIcon">□</span>
+          <span class="toolName">Rectangle</span>
+        </button>
+        <button class="tool" data-tool="circle">
+          <span class="toolIcon">○</span>
+          <span class="toolName">Circle</span>
+        </button>
+        <button class="tool" data-tool="text">
+          <span class="toolIcon">T</span>
+          <span class="toolName">Text</span>
+        </button>
+        <button class="tool" data-tool="select">
+          <span class="toolIcon">◆</span>
+          <span class="toolName">Select</span>
+        </button>
+        <button class="tool" data-tool="move">
+          <span class="toolIcon">↔</span>
+          <span class="toolName">Move</span>
+        </button>
+        <button class="tool" data-tool="delete">
+          <span class="toolIcon">✕</span>
+          <span class="toolName">Delete</span>
+        </button>
+      </div>
+      <div id="toolFlyout" class="toolFlyout"></div>
+    </aside>
+
+    <section id="canvasArea">
+      <div id="canvasViewport">
+        <div id="artboard">
+          <svg
+            id="canvasSvg"
+            viewBox="0 0 1200 800"
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              id="canvasBackground"
+              x="0"
+              y="0"
+              width="1200"
+              height="800"
+              fill="#ffffff"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <aside id="rightSidebar">
+      <section id="layersPanel">
+        <div class="panelHeader">
+          <span>Layers</span>
+          <div>
+            <button class="panelHeaderButton" title="New Layer">+</button>
+            <button class="panelHeaderButton" title="Delete Layer">−</button>
+          </div>
+        </div>
+        <div id="layersList">
+          <div class="layerRow active">
+            <span class="layerVisibility">●</span>
+            <span class="layerThumb">BG</span>
+            <span class="layerName">Background</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panelSection open">
+        <div class="panelSectionHeader">
+          <span>Color</span>
+          <span class="panelSectionArrow">›</span>
+        </div>
+        <div class="panelSectionBody">
+          <div class="colorRow">
+            <div class="panelField">
+              <label>Fill</label>
+              <input type="color" id="fillColor" class="panelInput" value="#000000">
+            </div>
+            <div class="panelField">
+              <label>Stroke</label>
+              <input type="color" id="strokeColor" class="panelInput" value="#000000">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panelSection open">
+        <div class="panelSectionHeader">
+          <span>Stroke</span>
+          <span class="panelSectionArrow">›</span>
+        </div>
+        <div class="panelSectionBody">
+          <div class="panelGrid">
+            <div class="panelField">
+              <label>Width</label>
+              <input type="number" class="panelInput" id="strokeWidth" value="2" min="0">
+            </div>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+  </main>
+
+</div>
+
+<script>
+let currentTool = null;
+let isDrawing = false;
+let startX, startY;
+let selectedElement = null;
+let elements = [];
+let layerCount = 0;
+
+const svg = document.getElementById('canvasSvg');
+const fillColorInput = document.getElementById('fillColor');
+const strokeColorInput = document.getElementById('strokeColor');
+const strokeWidthInput = document.getElementById('strokeWidth');
+const tools = document.querySelectorAll('.tool');
+const menus = document.querySelectorAll('.menu');
+const panelSections = document.querySelectorAll('.panelSection');
+
+// Menu functionality
+menus.forEach(menu => {
+  const button = menu.querySelector('.menuButton');
+  button.addEventListener('click', event => {
+    event.stopPropagation();
+    menus.forEach(other => {
+      if(other !== menu) other.classList.remove('open');
+    });
+    menu.classList.toggle('open');
+  });
+});
+
+document.addEventListener('click', () => {
+  menus.forEach(menu => menu.classList.remove('open'));
+});
+
+// Panel toggle
+panelSections.forEach(section => {
+  const header = section.querySelector('.panelSectionHeader');
+  header.addEventListener('click', () => {
+    section.classList.toggle('open');
+  });
+});
+
+// Tool selection
+tools.forEach(tool => {
+  tool.addEventListener('click', () => {
+    tools.forEach(t => t.classList.remove('active'));
+    tool.classList.add('active');
+    currentTool = tool.dataset.tool;
+  });
+});
+
+// Canvas drawing
+svg.addEventListener('mousedown', (e) => {
+  if(!currentTool) return;
+  
+  const rect = svg.getBoundingClientRect();
+  const viewBox = svg.viewBox.baseVal;
+  const scaleX = viewBox.width / rect.width;
+  const scaleY = viewBox.height / rect.height;
+  
+  startX = (e.clientX - rect.left) * scaleX + viewBox.x;
+  startY = (e.clientY - rect.top) * scaleY + viewBox.y;
+  
+  isDrawing = true;
+  
+  if(currentTool === 'select') {
+    selectedElement = e.target;
+    if(selectedElement.id !== 'canvasBackground' && selectedElement.id !== 'canvasSvg') {
+      selectedElement.setAttribute('stroke', '#0066ff');
+      selectedElement.setAttribute('stroke-width', '2');
+    }
+  }
+});
+
+svg.addEventListener('mousemove', (e) => {
+  if(!isDrawing || !currentTool) return;
+  
+  const rect = svg.getBoundingClientRect();
+  const viewBox = svg.viewBox.baseVal;
+  const scaleX = viewBox.width / rect.width;
+  const scaleY = viewBox.height / rect.height;
+  
+  const currentX = (e.clientX - rect.left) * scaleX + viewBox.x;
+  const currentY = (e.clientY - rect.top) * scaleY + viewBox.y;
+  
+  if(currentTool === 'move' && selectedElement && selectedElement.id !== 'canvasBackground') {
+    const dx = currentX - startX;
+    const dy = currentY - startY;
+    const x = parseFloat(selectedElement.getAttribute('x') || selectedElement.getAttribute('cx') || 0);
+    const y = parseFloat(selectedElement.getAttribute('y') || selectedElement.getAttribute('cy') || 0);
+    
+    if(selectedElement.tagName === 'rect') {
+      selectedElement.setAttribute('x', x + dx);
+      selectedElement.setAttribute('y', y + dy);
+    } else if(selectedElement.tagName === 'circle') {
+      selectedElement.setAttribute('cx', x + dx);
+      selectedElement.setAttribute('cy', y + dy);
+    } else if(selectedElement.tagName === 'text') {
+      selectedElement.setAttribute('x', x + dx);
+      selectedElement.setAttribute('y', y + dy);
+    }
+    
+    startX = currentX;
+    startY = currentY;
+  }
+});
+
+svg.addEventListener('mouseup', (e) => {
+  if(!isDrawing || !currentTool) return;
+  
+  const rect = svg.getBoundingClientRect();
+  const viewBox = svg.viewBox.baseVal;
+  const scaleX = viewBox.width / rect.width;
+  const scaleY = viewBox.height / rect.height;
+  
+  const endX = (e.clientX - rect.left) * scaleX + viewBox.x;
+  const endY = (e.clientY - rect.top) * scaleY + viewBox.y;
+  
+  const width = Math.abs(endX - startX);
+  const height = Math.abs(endY - startY);
+  
+  if(width < 5 || height < 5) {
+    isDrawing = false;
+    return;
+  }
+  
+  let element = null;
+  
+  if(currentTool === 'rectangle') {
+    element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    element.setAttribute('x', Math.min(startX, endX));
+    element.setAttribute('y', Math.min(startY, endY));
+    element.setAttribute('width', width);
+    element.setAttribute('height', height);
+    element.setAttribute('fill', fillColorInput.value);
+    element.setAttribute('stroke', strokeColorInput.value);
+    element.setAttribute('stroke-width', strokeWidthInput.value);
+    element.setAttribute('data-type', 'rectangle');
+  } 
+  else if(currentTool === 'circle') {
+    element = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    element.setAttribute('cx', (startX + endX) / 2);
+    element.setAttribute('cy', (startY + endY) / 2);
+    element.setAttribute('r', Math.min(width, height) / 2);
+    element.setAttribute('fill', fillColorInput.value);
+    element.setAttribute('stroke', strokeColorInput.value);
+    element.setAttribute('stroke-width', strokeWidthInput.value);
+    element.setAttribute('data-type', 'circle');
+  }
+  
+  if(element) {
+    element.setAttribute('id', 'shape-' + (++layerCount));
+    svg.appendChild(element);
+    addLayer(element.id, currentTool);
+    elements.push(element);
+  }
+  
+  isDrawing = false;
+});
+
+// Text tool
+if(currentTool === 'text') {
+  svg.addEventListener('click', (e) => {
+    if(currentTool !== 'text') return;
+    const text = prompt('Enter text:');
+    if(text) {
+      const rect = svg.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
+      const scaleX = viewBox.width / rect.width;
+      const scaleY = viewBox.height / rect.height;
+      
+      const x = (e.clientX - rect.left) * scaleX + viewBox.x;
+      const y = (e.clientY - rect.top) * scaleY + viewBox.y;
+      
+      const textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      textElement.setAttribute('x', x);
+      textElement.setAttribute('y', y);
+      textElement.setAttribute('fill', fillColorInput.value);
+      textElement.setAttribute('font-size', '20');
+      textElement.setAttribute('data-type', 'text');
+      textElement.textContent = text;
+      textElement.setAttribute('id', 'shape-' + (++layerCount));
+      svg.appendChild(textElement);
+      addLayer(textElement.id, 'text');
+      elements.push(textElement);
+    }
+  });
+}
+
+function addLayer(id, type) {
+  const layersList = document.getElementById('layersList');
+  const layerRow = document.createElement('div');
+  layerRow.className = 'layerRow';
+  layerRow.innerHTML = `
+    <span class="layerVisibility">●</span>
+    <span class="layerThumb">${type.charAt(0).toUpperCase()}</span>
+    <span class="layerName">${type}</span>
+  `;
+  layerRow.addEventListener('click', () => {
+    document.querySelectorAll('.layerRow').forEach(l => l.classList.remove('active'));
+    layerRow.classList.add('active');
+  });
+  layersList.appendChild(layerRow);
+}
+
+// Delete tool
+if(document.querySelector('[data-tool="delete"]')) {
+  document.querySelector('[data-tool="delete"]').addEventListener('click', () => {
+    currentTool = 'delete';
+  });
+  
+  svg.addEventListener('click', (e) => {
+    if(currentTool === 'delete' && e.target.id.startsWith('shape-')) {
+      e.target.remove();
+      elements = elements.filter(el => el !== e.target);
+    }
+  });
+}
+</script>
+
+</body>
+</html>
